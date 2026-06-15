@@ -1,6 +1,7 @@
 import {
   Construction,
   LayoutDashboard,
+  LayoutTemplate,
   Monitor,
   Bug,
   ListTodo,
@@ -66,6 +67,11 @@ export const sidebarData: SidebarData = {
           title: 'Apps',
           url: '/apps',
           icon: Package,
+        },
+        {
+          title: 'Print Designer',
+          url: '/print-designer',
+          icon: LayoutTemplate,
         },
         {
           title: 'Chats',

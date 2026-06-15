@@ -1,4 +1,4 @@
-import type { DesignerMode, GridMode, TemplateStatus } from '../enums'
+import type { CanvasTool, DesignerMode, GridMode, TemplateStatus } from '../enums'
 import type {
   ClipboardPayload,
   DesignerDocument,
@@ -10,6 +10,7 @@ import type {
 
 export interface DesignerStoreState extends DesignerDocument {
   mode: DesignerMode
+  activeTool: CanvasTool
   zoom: number
   panX: number
   panY: number
@@ -20,6 +21,7 @@ export interface DesignerStoreState extends DesignerDocument {
 
 export interface DesignerStoreActions {
   setMode: (mode: DesignerMode) => void
+  setActiveTool: (tool: CanvasTool) => void
   setPaper: (paper: PaperConfig) => void
   updatePaper: (partial: Partial<PaperConfig>) => void
   setZoom: (zoom: number) => void

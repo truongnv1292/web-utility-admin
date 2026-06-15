@@ -1,0 +1,11 @@
+export const RULER_SIZE = 24
+export const CANVAS_WORKSPACE_PADDING = 48
+export const PAPER_SHADOW_OFFSET = 4
+export const PAPER_SHADOW_BLUR = 12
+export const GRID_LINE_COLOR = '#e2e8f0'
+export const GRID_LINE_COLOR_DARK = '#334155'
+export const CANVAS_BG_COLOR = '#f1f5f9'
+export const CANVAS_BG_COLOR_DARK = '#0f172a'
+export const PAPER_BORDER_COLOR = '#cbd5e1'
+export const SCROLLBAR_SIZE = 12
+export const WORKSPACE_MARGIN_MULTIPLIER = 2

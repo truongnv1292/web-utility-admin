@@ -8,11 +8,10 @@ import {
   ZOOM_STEP,
 } from '../constants'
 import {
+  CanvasTool,
   DesignerMode,
   GridMode,
   Orientation,
-  PaperType,
-  PaperUnit,
 } from '../enums'
 import type {
   DesignerDocument,
@@ -55,6 +54,7 @@ const initialState = {
   elements: {} as Record<string, DesignerElement>,
   elementOrder: [] as string[],
   mode: DesignerMode.DESIGN,
+  activeTool: CanvasTool.SELECT,
   zoom: DEFAULT_ZOOM,
   panX: 0,
   panY: 0,
@@ -67,6 +67,8 @@ export const useDesignerStore = create<DesignerStore>()((set, get) => ({
   ...initialState,
 
   setMode: (mode) => set({ mode }),
+
+  setActiveTool: (activeTool) => set({ activeTool }),
 
   setPaper: (paper) => set({ paper }),
 
@@ -205,25 +207,3 @@ export const useDesignerStore = create<DesignerStore>()((set, get) => ({
 
   reset: () => set({ ...initialState, paper: createDefaultPaper() }),
 }))
-
-export function createPaperFromPreset(
-  type: PaperType,
-  orientation: Orientation,
-  dpi: number
-): PaperConfig {
-  const preset = DEFAULT_PAPER_PRESET
-  const isLandscape = orientation === Orientation.LANDSCAPE
-  const width = isLandscape ? preset.height : preset.width
-  const height = isLandscape ? preset.width : preset.height
-
-  return {
-    type,
-    orientation,
-    width,
-    height,
-    unit: PaperUnit.MM,
-    dpi,
-    margin: { top: 0, right: 0, bottom: 0, left: 0 },
-    backgroundColor: '#ffffff',
-  }
-}

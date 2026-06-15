@@ -56,6 +56,11 @@ export enum DesignerMode {
   PREVIEW = 'PREVIEW',
 }
 
+export enum CanvasTool {
+  SELECT = 'SELECT',
+  HAND = 'HAND',
+}
+
 export enum TemplateStatus {
   DRAFT = 'DRAFT',
   ACTIVE = 'ACTIVE',

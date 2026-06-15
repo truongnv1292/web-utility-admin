@@ -1,4 +1,4 @@
-export { useDesignerStore, createPaperFromPreset } from './designer-store'
+export { useDesignerStore } from './designer-store'
 export { useSelectionStore } from './selection-store'
 export { useLayerStore } from './layer-store'
 export { useHistoryStore, createSnapshot } from './history-store'
