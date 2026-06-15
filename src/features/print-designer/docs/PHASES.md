@@ -7,11 +7,11 @@
 
 | Trạng thái | Số phase |
 |------------|----------|
-| Hoàn thành | 2 |
+| Hoàn thành | 3 |
 | Đang thực hiện | 0 |
-| Chưa bắt đầu | 11 |
+| Chưa bắt đầu | 10 |
 
-**Phase hiện tại:** Chờ review Phase 1 → bắt đầu Phase 2
+**Phase hiện tại:** Chờ review Phase 2 → bắt đầu Phase 3
 
 ---
 
@@ -91,24 +91,40 @@
 
 ---
 
-### Phase 2 — Drag Drop Engine ⏳
+### Phase 2 — Drag Drop Engine ✅
 
-**Trạng thái:** Chưa bắt đầu  
+**Trạng thái:** Hoàn thành  
+**Ngày hoàn thành:** 16/06/2026  
 **Phụ thuộc:** Phase 1 ✅
 
 | Hạng mục | Trạng thái |
 |----------|------------|
-| Toolbar palette | ⏳ |
-| React DnD drop to canvas | ⏳ |
-| Add Element (10 loại) | ⏳ |
-| Select Element | ⏳ |
+| Toolbar palette | ✅ |
+| React DnD drop to canvas | ✅ |
+| Add Element (10 loại) | ✅ |
+| Select Element | ✅ |
+
+**Deliverables:**
+- `components/toolbar/element-palette.tsx` — palette 10 elements
+- `components/dnd/` — React DnD provider + types
+- `components/canvas/elements/` — Konva renderers + selection highlight
+- `utils/element-factory.ts` — default element factory
+- `constants/elements.ts` — palette config
+- `hooks/use-add-element.ts`, `use-canvas-drop.ts`, `use-element-selection.ts`
+
+**Tương tác:**
+- Kéo từ palette → thả lên canvas (vị trí chuột, snap grid)
+- Click icon palette → thêm element tại giữa giấy
+- Click element để chọn (tool Select), Shift+click multi-select
+- Click vùng trống paper → bỏ chọn
+- History snapshot + markDirty khi thêm element
 
 ---
 
 ### Phase 3 — Transform ⏳
 
 **Trạng thái:** Chưa bắt đầu  
-**Phụ thuộc:** Phase 2
+**Phụ thuộc:** Phase 2 ✅
 
 | Hạng mục | Trạng thái |
 |----------|------------|
@@ -257,7 +273,8 @@ src/features/print-designer/
 ├── components/
 │   ├── canvas/            ✅ Phase 1
 │   ├── ruler/             ✅ Phase 1
-│   ├── toolbar/           ✅ Phase 1
+│   ├── toolbar/           ✅ Phase 1 + 2
+│   ├── dnd/               ✅ Phase 2
 │   ├── paper/             ✅ Phase 1
 │   ├── inspector/         ⏳ Phase 5
 │   ├── layers/            ⏳ Phase 4
@@ -295,3 +312,4 @@ Mỗi khi hoàn thành hoặc bắt đầu phase:
 |------|----------|
 | 16/06/2026 | Phase 0 hoàn thành; rename `modules/` → `features/` |
 | 16/06/2026 | Phase 1 hoàn thành — Canvas Foundation (Konva, grid, zoom, pan, paper, rulers) |
+| 16/06/2026 | Phase 2 hoàn thành — Drag Drop Engine (palette, React DnD, add/select elements) |

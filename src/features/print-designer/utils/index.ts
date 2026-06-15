@@ -17,6 +17,13 @@ export {
 } from './paper'
 
 export {
+  createDefaultElement,
+  DEFAULT_TEXT_STYLE,
+  ELEMENT_DEFAULT_SIZES,
+  getElementCenterPosition,
+} from './element-factory'
+
+export {
   clampPan,
   computePanBounds,
   computeThumbMetrics,

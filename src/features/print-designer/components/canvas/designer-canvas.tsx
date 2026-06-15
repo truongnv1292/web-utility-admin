@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import {
   CANVAS_BG_COLOR,
   CANVAS_BG_COLOR_DARK,
   SCROLLBAR_SIZE,
 } from '../../constants/canvas'
+import { useCanvasDrop } from '../../hooks/use-canvas-drop'
 import { useCanvasSize, useCanvasViewport } from '../../hooks'
 import { useDesignerStore } from '../../store'
 import {
@@ -30,6 +31,13 @@ export function DesignerCanvas({ isDark = false, className }: DesignerCanvasProp
     paper,
   })
 
+  const { drop, isOver, canDrop } = useCanvasDrop({
+    panX: viewport.panX,
+    panY: viewport.panY,
+    zoom: viewport.zoom,
+    containerRef,
+  })
+
   const scrollbarProps = {
     stageWidth: size.width,
     stageHeight: size.height,
@@ -38,6 +46,14 @@ export function DesignerCanvas({ isDark = false, className }: DesignerCanvasProp
     panBounds: viewport.panBounds,
     onPanChange: viewport.setPanClamped,
   }
+
+  const mergedContainerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node
+      drop(node)
+    },
+    [containerRef, drop]
+  )
 
   wheelHandlerRef.current = viewport.handleWheel
 
@@ -51,7 +67,7 @@ export function DesignerCanvas({ isDark = false, className }: DesignerCanvasProp
 
     element.addEventListener('wheel', onWheel, { passive: false })
     return () => element.removeEventListener('wheel', onWheel)
-  }, [containerRef])
+  }, [containerRef, size.width, size.height])
 
   return (
     <div
@@ -59,10 +75,11 @@ export function DesignerCanvas({ isDark = false, className }: DesignerCanvasProp
     >
       <div className='flex min-h-0 min-w-0 flex-1'>
         <div
-          ref={containerRef}
+          ref={mergedContainerRef}
           className={cn(
             'relative min-h-0 min-w-0 flex-1 overflow-hidden',
-            isDark ? 'bg-slate-900' : 'bg-slate-100'
+            isDark ? 'bg-slate-900' : 'bg-slate-100',
+            isOver && canDrop && 'ring-2 ring-inset ring-primary/40'
           )}
           style={{
             backgroundColor: isDark ? CANVAS_BG_COLOR_DARK : CANVAS_BG_COLOR,
