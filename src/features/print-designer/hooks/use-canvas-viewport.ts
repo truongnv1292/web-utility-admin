@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MIN_ZOOM, MAX_ZOOM } from '../constants'
 import { CanvasTool } from '../enums'
 import { useDesignerStore } from '../store'
+import { useSettingsStore } from '../store/settings-store'
 import type { PaperConfig } from '../types'
 import {
   clamp,
@@ -9,6 +10,7 @@ import {
   computeFitToScreen,
   computePanBounds,
   getPaperDimensions,
+  resetViewAt100,
 } from '../utils'
 
 interface UseCanvasViewportOptions {
@@ -31,6 +33,7 @@ export function useCanvasViewport({
   const setActiveTool = useDesignerStore((s) => s.setActiveTool)
   const zoomIn = useDesignerStore((s) => s.zoomIn)
   const zoomOut = useDesignerStore((s) => s.zoomOut)
+  const zoomLocked = useSettingsStore((s) => s.zoomLocked)
 
   const isPanningRef = useRef(false)
   const lastPointerRef = useRef({ x: 0, y: 0 })
@@ -64,6 +67,13 @@ export function useCanvasViewport({
     [panBounds, setPan]
   )
 
+  const applyViewAt100 = useCallback(() => {
+    if (stageWidth <= 0 || stageHeight <= 0) return
+    const view = resetViewAt100(stageWidth, stageHeight, paper)
+    setZoom(view.zoom)
+    setPanClamped(view.panX, view.panY)
+  }, [paper, setPanClamped, setZoom, stageHeight, stageWidth])
+
   const fitToScreen = useCallback(() => {
     if (stageWidth <= 0 || stageHeight <= 0) return
     const view = computeFitToScreen(stageWidth, stageHeight, paper)
@@ -96,10 +106,12 @@ export function useCanvasViewport({
         return
       }
 
+      if (zoomLocked) return
+
       const delta = event.deltaY > 0 ? -0.08 : 0.08
       zoomAtPoint(pointerX, pointerY, zoom + delta)
     },
-    [panX, panY, setPanClamped, zoom, zoomAtPoint]
+    [panX, panY, setPanClamped, zoom, zoomAtPoint, zoomLocked]
   )
 
   const handlePointerDown = useCallback(
@@ -191,11 +203,11 @@ export function useCanvasViewport({
   useEffect(() => {
     if (stageWidth <= 0 || stageHeight <= 0) return
     fitToScreen()
-  }, [paper.width, paper.height, paper.dpi, paper.orientation, stageWidth, stageHeight]) // eslint-disable-line react-hooks/exhaustive-deps -- refit when paper or stage changes
+  }, [paper.width, paper.height, paper.dpi, paper.orientation, stageWidth, stageHeight]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setPanClamped(panX, panY)
-  }, [panBounds]) // eslint-disable-line react-hooks/exhaustive-deps -- reclamp when bounds change
+  }, [panBounds]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const isHandMode = activeTool === CanvasTool.HAND || spacePressed
 
@@ -213,10 +225,12 @@ export function useCanvasViewport({
     contentWidthPx,
     contentHeightPx,
     activeTool,
+    zoomLocked,
     zoomIn,
     zoomOut,
     setZoom,
     fitToScreen,
+    applyViewAt100,
     setPanClamped,
     handleWheel,
     handlePointerDown,

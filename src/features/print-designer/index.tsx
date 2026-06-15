@@ -10,6 +10,7 @@ import { PrintDesignerDndProvider } from './components/dnd'
 import { DesignerWorkspace } from './components/designer-workspace'
 import { PaperSettingsPanel } from './components/paper'
 import { ElementPalette } from './components/toolbar/element-palette'
+import { ElementInspector } from './components/inspector'
 import { useTemplateStore } from './store'
 
 export function PrintDesigner() {
@@ -42,6 +43,7 @@ export function PrintDesigner() {
           <PaperSettingsPanel />
           <ElementPalette />
           <DesignerWorkspace />
+          <ElementInspector />
         </Main>
       </TooltipProvider>
     </PrintDesignerDndProvider>

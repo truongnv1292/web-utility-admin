@@ -22,6 +22,8 @@ export const DEFAULT_TEXT_STYLE: TextStyle = {
   verticalAlign: VerticalAlign.TOP,
   lineHeight: 1.4,
   letterSpacing: 0,
+  italic: false,
+  underline: false,
 }
 
 export interface ElementDefaultSize {

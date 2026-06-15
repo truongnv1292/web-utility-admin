@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import type Konva from 'konva'
 import {
   Circle as KonvaCircle,
@@ -7,40 +7,66 @@ import {
   Rect,
   Text,
 } from 'react-konva'
-import { ElementType, FontWeight } from '../../../enums'
+import { ElementType } from '../../../enums'
 import { TEMPLATE_VARIABLES } from '../../../constants'
+import { buildKonvaFontStyle } from '../../../hooks/use-update-element'
 import type { DesignerElement, TableCell, TableRow } from '../../../types/elements'
-
-const FONT_WEIGHT_MAP: Record<FontWeight, string> = {
-  [FontWeight.NORMAL]: 'normal',
-  [FontWeight.MEDIUM]: '500',
-  [FontWeight.SEMIBOLD]: '600',
-  [FontWeight.BOLD]: 'bold',
-}
 
 interface CanvasElementNodeProps {
   element: DesignerElement
   isSelected: boolean
   isHovered: boolean
+  isDraggable: boolean
+  paperWidthPx: number
+  paperHeightPx: number
   onSelect: (id: string, event: Konva.KonvaEventObject<Event>) => void
   onMouseEnter: (id: string) => void
   onMouseLeave: () => void
+  onDragEnd: (
+    element: DesignerElement,
+    nodeX: number,
+    nodeY: number
+  ) => void
 }
 
 export const CanvasElementNode = memo(function CanvasElementNode({
   element,
   isSelected,
   isHovered,
+  isDraggable,
+  paperWidthPx,
+  paperHeightPx,
   onSelect,
   onMouseEnter,
   onMouseLeave,
+  onDragEnd,
 }: CanvasElementNodeProps) {
+  const dragBoundFunc = useCallback(
+    (pos: { x: number; y: number }) => ({
+      x: Math.max(0, Math.min(pos.x, paperWidthPx - element.width)),
+      y: Math.max(0, Math.min(pos.y, paperHeightPx - element.height)),
+    }),
+    [element.width, element.height, paperHeightPx, paperWidthPx]
+  )
+
+  const handleDragEnd = useCallback(
+    (event: Konva.KonvaEventObject<DragEvent>) => {
+      const node = event.target
+      onDragEnd(element, node.x(), node.y())
+    },
+    [element, onDragEnd]
+  )
+
   if (!element.visible) return null
+
+  const canDrag = isDraggable && !element.locked
 
   const commonProps = {
     x: element.x,
     y: element.y,
     rotation: element.rotation,
+    draggable: canDrag,
+    dragBoundFunc: canDrag ? dragBoundFunc : undefined,
     listening: !element.locked,
     onClick: (event: Konva.KonvaEventObject<MouseEvent>) =>
       onSelect(element.id, event),
@@ -48,10 +74,37 @@ export const CanvasElementNode = memo(function CanvasElementNode({
       onSelect(element.id, event),
     onMouseEnter: () => onMouseEnter(element.id),
     onMouseLeave: onMouseLeave,
+    onDragEnd: canDrag ? handleDragEnd : undefined,
   }
 
   const selectionStroke = isSelected ? '#3b82f6' : isHovered ? '#93c5fd' : undefined
   const selectionStrokeWidth = isSelected ? 2 : isHovered ? 1 : 0
+
+  const renderTextStyle = (style: {
+    fontFamily: string
+    fontSize: number
+    fontWeight: string
+    italic: boolean
+    underline: boolean
+    color: string
+    textAlign: string
+    verticalAlign: string
+    lineHeight: number
+    letterSpacing: number
+  }) => ({
+    fontFamily: style.fontFamily,
+    fontSize: style.fontSize,
+    fontStyle: buildKonvaFontStyle({
+      fontWeight: style.fontWeight,
+      italic: style.italic,
+    }),
+    textDecoration: style.underline ? 'underline' : undefined,
+    fill: style.color,
+    align: style.textAlign.toLowerCase(),
+    verticalAlign: style.verticalAlign.toLowerCase(),
+    lineHeight: style.lineHeight,
+    letterSpacing: style.letterSpacing,
+  })
 
   const renderContent = () => {
     switch (element.type) {
@@ -68,17 +121,7 @@ export const CanvasElementNode = memo(function CanvasElementNode({
               width={element.width}
               height={element.height}
               text={element.content}
-              fontFamily={element.style.fontFamily}
-              fontSize={element.style.fontSize}
-              fontStyle={
-                FONT_WEIGHT_MAP[element.style.fontWeight as FontWeight] ??
-                'normal'
-              }
-              fill={element.style.color}
-              align={element.style.textAlign.toLowerCase()}
-              verticalAlign={element.style.verticalAlign.toLowerCase()}
-              lineHeight={element.style.lineHeight}
-              letterSpacing={element.style.letterSpacing}
+              {...renderTextStyle(element.style)}
               wrap={element.type === ElementType.MULTILINE_TEXT ? 'word' : 'none'}
               listening={false}
             />
@@ -260,9 +303,7 @@ export const CanvasElementNode = memo(function CanvasElementNode({
               width={element.width}
               height={element.height}
               text={displayText}
-              fontFamily={element.style.fontFamily}
-              fontSize={element.style.fontSize}
-              fill={element.style.color}
+              {...renderTextStyle(element.style)}
               align='center'
               verticalAlign='middle'
               listening={false}

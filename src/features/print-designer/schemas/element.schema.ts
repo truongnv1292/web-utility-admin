@@ -31,6 +31,8 @@ export const textStyleSchema = z.object({
   verticalAlign: z.enum(VerticalAlign),
   lineHeight: z.number().positive().max(10),
   letterSpacing: z.number().min(-50).max(100),
+  italic: z.boolean(),
+  underline: z.boolean(),
 })
 
 export const elementStyleSchema = z.object({

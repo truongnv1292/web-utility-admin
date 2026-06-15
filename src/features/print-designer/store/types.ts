@@ -134,6 +134,7 @@ export interface SettingsStoreState {
   defaultGridMode: GridMode
   defaultSnapToGrid: boolean
   showRulers: boolean
+  zoomLocked: boolean
   keyboardShortcutsEnabled: boolean
   recentTemplateIds: string[]
 }
@@ -143,6 +144,7 @@ export interface SettingsStoreActions {
   setDefaultGridMode: (mode: GridMode) => void
   setDefaultSnapToGrid: (snap: boolean) => void
   setShowRulers: (show: boolean) => void
+  setZoomLocked: (locked: boolean) => void
   setKeyboardShortcutsEnabled: (enabled: boolean) => void
   addRecentTemplate: (templateId: string) => void
   reset: () => void

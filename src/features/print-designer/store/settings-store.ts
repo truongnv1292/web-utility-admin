@@ -13,6 +13,7 @@ export const useSettingsStore = create<SettingsStore>()(
       defaultGridMode: GridMode.MEDIUM,
       defaultSnapToGrid: true,
       showRulers: true,
+      zoomLocked: true,
       keyboardShortcutsEnabled: true,
       recentTemplateIds: [],
 
@@ -23,6 +24,8 @@ export const useSettingsStore = create<SettingsStore>()(
       setDefaultSnapToGrid: (defaultSnapToGrid) => set({ defaultSnapToGrid }),
 
       setShowRulers: (showRulers) => set({ showRulers }),
+
+      setZoomLocked: (zoomLocked) => set({ zoomLocked }),
 
       setKeyboardShortcutsEnabled: (keyboardShortcutsEnabled) =>
         set({ keyboardShortcutsEnabled }),
@@ -46,6 +49,7 @@ export const useSettingsStore = create<SettingsStore>()(
           defaultGridMode: GridMode.MEDIUM,
           defaultSnapToGrid: true,
           showRulers: true,
+          zoomLocked: true,
           keyboardShortcutsEnabled: true,
           recentTemplateIds: get().recentTemplateIds,
         }),
@@ -57,6 +61,7 @@ export const useSettingsStore = create<SettingsStore>()(
         defaultGridMode: state.defaultGridMode,
         defaultSnapToGrid: state.defaultSnapToGrid,
         showRulers: state.showRulers,
+        zoomLocked: state.zoomLocked,
         keyboardShortcutsEnabled: state.keyboardShortcutsEnabled,
         recentTemplateIds: state.recentTemplateIds,
       }),

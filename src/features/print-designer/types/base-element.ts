@@ -31,4 +31,6 @@ export interface TextStyle {
   verticalAlign: string
   lineHeight: number
   letterSpacing: number
+  italic: boolean
+  underline: boolean
 }

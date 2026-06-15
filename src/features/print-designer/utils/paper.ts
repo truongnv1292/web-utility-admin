@@ -70,6 +70,19 @@ export function computeCenterView(
   }
 }
 
+export function resetViewAt100(
+  stageWidth: number,
+  stageHeight: number,
+  paper: PaperConfig
+): { zoom: number; panX: number; panY: number } {
+  const { widthPx, heightPx } = getPaperDimensions(paper)
+  return {
+    zoom: 1,
+    panX: (stageWidth - widthPx) / 2,
+    panY: (stageHeight - heightPx) / 2,
+  }
+}
+
 export function formatPaperSizeLabel(paper: PaperConfig): string {
   return `${paper.width} × ${paper.height} ${paper.unit} @ ${paper.dpi} DPI`
 }

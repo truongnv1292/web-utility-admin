@@ -14,7 +14,9 @@ export {
   computeFitToScreen,
   createPaperFromPreset,
   formatPaperSizeLabel,
+  resetViewAt100,
 } from './paper'
+export { exportPaperToDataUrl, printPaperDocument } from './paper-export'
 
 export {
   createDefaultElement,
